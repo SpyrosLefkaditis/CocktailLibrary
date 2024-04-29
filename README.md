@@ -12,6 +12,7 @@ Welcome to Cocktail Library, your personal repository for storing and managing c
 1. Clone this repository to your local machine.
 2. Open the `index.html` file in your web browser.
 3. Use the interface to add, view, and delete cocktails from your library.
+4. Make images file and move the image inside
 
 ## Technologies Used
 - HTML
