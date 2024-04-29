@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cocktail Search App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+    body{
+    background-image:url("images/bar-image.jpg");
+    background-repeat:no-repeat;
+
+    }
+    img{
+        border-radius: 13px;
+    }
+        .container {
+            margin-top: 50px;
+        }
+        .cocktail {
+            margin-bottom: 20px;
+        }
+        .cocktail img {
+            max-width: 100px;
+        }
+        .delete-btn {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- Search input and button removed -->
+
+        <hr>
+        <h2>Results</h2>
+        <div class="" id="cocktailList">
+            <!-- Results will be displayed here -->
+        </div>
+        <button id="addCocktailBtn" class="btn btn-success mt-3">Add Cocktail</button>
+    </div>
+
+    <!-- Modal for adding a cocktail -->
+    <div class="modal fade" id="addCocktailModal" tabindex="-1" aria-labelledby="addCocktailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCocktailModalLabel">Add Cocktail</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" id="cocktailNameInput" class="form-control" placeholder="Cocktail Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="cocktailDescriptionInput" class="form-control" placeholder="Cocktail Description">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="cocktailPhotoInput" class="form-control" placeholder="Cocktail Photo URL">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="saveCocktailBtn" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Function to render cocktail list
+        function renderCocktails() {
+            const cocktailList = document.getElementById('cocktailList');
+            cocktailList.innerHTML = '';
+            const cocktails = JSON.parse(localStorage.getItem('cocktails')) || [];
+            cocktails.forEach((cocktail, index) => {
+                const cocktailElement = document.createElement('div');
+                cocktailElement.className = 'cocktail';
+
+                const nameElement = document.createElement('h2');
+                nameElement.textContent = cocktail.name;
+                cocktailElement.appendChild(nameElement);
+
+                const descriptionElement = document.createElement('p');
+                descriptionElement.textContent = cocktail.description;
+                cocktailElement.appendChild(descriptionElement);
+
+                const photoElement = document.createElement('img');
+                photoElement.src = cocktail.photo;
+                cocktailElement.appendChild(photoElement);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn btn-danger delete-btn';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.addEventListener('click', function() {
+                    cocktails.splice(index, 1);
+                    localStorage.setItem('cocktails', JSON.stringify(cocktails));
+                    renderCocktails();
+                });
+                cocktailElement.appendChild(deleteBtn);
+
+                cocktailList.appendChild(cocktailElement);
+            });
+        }
+
+        // Function to add a cocktail
+        function addCocktail(name, description, photo) {
+            const cocktails = JSON.parse(localStorage.getItem('cocktails')) || [];
+            cocktails.push({ name, description, photo });
+            localStorage.setItem('cocktails', JSON.stringify(cocktails));
+            renderCocktails();
+        }
+
+        // Event listener for add cocktail button click
+        document.getElementById('addCocktailBtn').addEventListener('click', function() {
+            $('#addCocktailModal').modal('show');
+        });
+
+        // Event listener for save cocktail button click
+        document.getElementById('saveCocktailBtn').addEventListener('click', function() {
+            const cocktailName = document.getElementById('cocktailNameInput').value;
+            const cocktailDescription = document.getElementById('cocktailDescriptionInput').value;
+            const cocktailPhoto = document.getElementById('cocktailPhotoInput').value;
+            addCocktail(cocktailName, cocktailDescription, cocktailPhoto);
+            $('#addCocktailModal').modal('hide');
+        });
+
+        // Render cocktails on page load
+        renderCocktails();
+    </script>
+</body>
+</html>
